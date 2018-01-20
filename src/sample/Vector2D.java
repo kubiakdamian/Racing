@@ -34,37 +34,8 @@ public class Vector2D {
     public double getX() {
         return x;
     }
-
-    public void setX(double x) {
-        this.x = x;
-        refreshCartesian();
-    }
-
     public double getY() {
         return y;
-    }
-
-    public void setY(double y) {
-        this.y = y;
-        refreshCartesian();
-    }
-
-    public double getRadius() {
-        return radius;
-    }
-
-    public void setRadius(double radius) {
-        this.radius = radius;
-        refreshCartesian();
-    }
-
-    public double getAngle() {
-        return angle;
-    }
-
-    public void setAngle(double angle) {
-        this.angle = angle;
-        refreshCartesian();
     }
 
     private void refreshPolar(){
@@ -77,11 +48,4 @@ public class Vector2D {
         y = radius * Math.sin(angle);
     }
 
-    static double normalizeAngle(double angle){
-        while(angle >= 2* Math.PI){
-            angle -= 2 * Math.PI;
-        }
-
-        return angle;
-    }
 }
