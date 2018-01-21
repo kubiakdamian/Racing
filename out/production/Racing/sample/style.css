@@ -1,0 +1,28 @@
+.anchor {
+    -fx-background-image: url(menu.jpg);
+    -fx-background-size: cover;
+    -fx-background-repeat: no-repeat;
+    -fx-background-position: center;
+}
+
+.text{
+    -fx-font-size: 70px;
+    -fx-text-alignment: center;
+    -fx-font-style: italic;
+    -fx-font-weight: bold;
+    -fx-font-family: sans-serif;
+}
+
+.button{
+    -fx-background-color: rgb(0, 153, 204);
+    -fx-opacity: 0.95;
+    -fx-font-weight: bold;
+}
+
+.button:hover{
+    -fx-cursor: hand;
+}
+
+.button:selected{
+    -fx-background-color: rgb(32, 200, 204);
+}

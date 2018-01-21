@@ -12,7 +12,7 @@ public class OptionDialog extends Application {
 
     @Override
     public void start(Stage window) throws Exception {
-        Parent root = FXMLLoader.load(getClass().getResource("DialogDesign.fxml"));
+        Parent root = FXMLLoader.load(getClass().getResource("Menu.fxml"));
         Scene scene = new Scene(root);
         window.setScene(scene);
         window.show();

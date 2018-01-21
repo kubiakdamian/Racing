@@ -29,16 +29,11 @@ public class StatusUpdater extends Pane{
 
     public void setTextAndAnimate(String message){
         status.setText(message);
-        FadeTransition fadeTransition = new FadeTransition(Duration.seconds(1), this);
+        FadeTransition fadeTransition = new FadeTransition(Duration.seconds(2), this);
         fadeTransition.setFromValue(0);
-        fadeTransition.setToValue(0.5);
+        fadeTransition.setToValue(1);
         fadeTransition.setAutoReverse(true);
-        fadeTransition.setCycleCount(2);
+        fadeTransition.setCycleCount(20);
         fadeTransition.play();
-    }
-
-    public void setText(String message){
-        status.setText(message);
-        this.setOpacity(1);
     }
 }

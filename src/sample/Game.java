@@ -5,8 +5,10 @@ import javafx.animation.Timeline;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
+import javafx.scene.control.Label;
 import javafx.scene.control.ProgressIndicator;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.Pane;
@@ -15,6 +17,7 @@ import javafx.scene.shape.*;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
+import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
@@ -23,10 +26,11 @@ import java.io.DataOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 
-public class Main extends Application {
+public class Game extends Application {
     public static double width = 800, height = 600;
     private static double FPS = 30.0;
     private Pane container;
+    private Label timeText;
     static String address;
     static boolean server;
     private DataOutputStream out;
@@ -39,19 +43,30 @@ public class Main extends Application {
     private StatusUpdater statusUpdater = new StatusUpdater(width / 2 - 150, height / 2 - 35);
     private Timeline gameLoop;
     private long time = 0;
+    private long currentTime = 0;
     private Line meta;
 
     @Override
     public void start(Stage primaryStage) throws Exception{
         container = new Pane();
+        timeText = new Label();
         Scene scene = new Scene(container, width, height);
         primaryStage.setScene(scene);
         primaryStage.setResizable(false);
         primaryStage.show();
 
         loadLevel(container.getChildren());
+
         car1 = new Car();
         car2 = new Car();
+        timeText.setTranslateX(370);
+        timeText.setTranslateY(270);
+        timeText.setTextFill(Color.WHITE);
+        timeText.setStyle("-fx-font-weight: bold;" +
+                "-fx-font-style: italic;" +
+                "-fx-font-size: 30px");
+        container.getChildren().add(timeText);
+
 
         if(server){
             setCars(car1, car2);
@@ -67,6 +82,10 @@ public class Main extends Application {
         container.setOnKeyReleased(event -> keyPressed = false);
 
         gameLoop = new Timeline(new KeyFrame(Duration.millis(1000 / FPS), event -> {
+            currentTime = System.currentTimeMillis() - time;
+            if(currentTime != System.currentTimeMillis()){
+                timeText.setText(String.valueOf(currentTime / 1000) + "s");
+            }
             if(keyPressed){
                 if(keyPressedCode == KeyCode.SPACE) {
                     car1.setDirection(car1.direction -= (3));
@@ -83,7 +102,6 @@ public class Main extends Application {
                     out.writeDouble(car1.locationY.get());
                 }
             }catch(Exception ex){
-                System.out.println("Failed in sending data!");
             }
 
             try{
@@ -93,7 +111,6 @@ public class Main extends Application {
                     car2.locationY.set(z);
                 }
             }catch (Exception ex){
-                System.out.println("Failed in setting car2 directions");
             }
         }));
 
@@ -121,7 +138,7 @@ public class Main extends Application {
             try{
                 Socket socket;
                 if(server){
-                    ServerSocket serverSocket = new ServerSocket(8888);
+                    ServerSocket serverSocket = new ServerSocket(5);
                     socket = serverSocket.accept();
                     Platform.runLater(() -> {
                         container.getChildren().remove(container.getChildren().size() - 3, container.getChildren().size());
@@ -129,7 +146,7 @@ public class Main extends Application {
                         time = System.currentTimeMillis();
                     });
                 }else{
-                    socket = new Socket(address, 8888);
+                    socket = new Socket(address, 5);
                     Platform.runLater(() -> {
                         container.requestFocus();
                         time = System.currentTimeMillis();
@@ -171,14 +188,15 @@ public class Main extends Application {
     }
 
     private void checkForCollisions(Car car) {
-        if (CollisionDetectors.DetacteCollision(car.graphics, meta)){
+        if (Collision.DetacteCollision(car.graphics, meta)){
+            timeText.setText("");
             time = System.currentTimeMillis() - time;
-            statusUpdater.setText("Finished in: " + String.format("%.2f", time / 1000.0) + " seconds");
+            statusUpdater.setTextAndAnimate("Finished in: " + String.format("%.2f", time / 1000.0) + " seconds");
             gameLoop.stop();
         }
 
-        if (CollisionDetectors.DetacteCollision(car.graphics, Level.ellipse)
-                || CollisionDetectors.DetacteCollision(car.graphics, Level.ellipse2)){
+        if (Collision.DetacteCollision(car.graphics, Level.ellipse)
+                || Collision.DetacteCollision(car.graphics, Level.ellipse2)){
             if (!car.isColliding) {
                 car.setLocationByVector(Level.startAfterCollision[0] - car.w, height - Level.startAfterCollision[1]);
                 car.setDirection(90);
@@ -191,9 +209,9 @@ public class Main extends Application {
     private void setCars(Car car1, Car car2){
         car1.setLocationByVector(Level.startCar1[0] - car1.w, height - Level.startCar1[1]);
         car1.setDirection(90);
+        car1.getGraphics().setFill(Color.MEDIUMPURPLE);
         car2.setLocationByVector(Level.startCar2[0] - car2.w, height - Level.startCar2[1]);
         car2.setDirection(90);
-        car1.getGraphics().setFill(Color.MEDIUMPURPLE);
         car2.getGraphics().setFill(Color.ORANGE);
     }
 

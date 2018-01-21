@@ -7,8 +7,8 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.transform.Rotate;
 
 public class Car {
-    double w = 35;
-    double h = 15;
+    double w = 50;
+    double h = 25;
     public Rectangle graphics;
     public DoubleProperty locationX, locationY;
     public double direction = 0;
@@ -26,10 +26,12 @@ public class Car {
         graphics.setStroke(Color.BLACK);
         graphics.setRotationAxis(Rotate.Z_AXIS);
         graphics.xProperty().bind(locationX.add(w / 2));
-        graphics.yProperty().bind(locationY.multiply(-1).add(Main.height - w / 2));
+        graphics.yProperty().bind(locationY.multiply(-1).add(Game.height - w / 2));
         graphics.setFill(Color.MEDIUMPURPLE);
         graphics.setWidth(w);
         graphics.setHeight(h);
+        graphics.setArcHeight(20);
+        graphics.setArcWidth(20);
 
     }
 

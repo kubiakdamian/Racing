@@ -8,7 +8,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleButton;
 
-public class DialogDesignController implements Initializable {
+public class MenuController implements Initializable {
 
     @FXML
     Button continuebtn;
@@ -21,6 +21,7 @@ public class DialogDesignController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        continuebtn.setDisable(true);
         playbtn.setOnAction(e -> {
             playbtn.setSelected(true);
             hostbtn.setSelected(false);
@@ -33,9 +34,9 @@ public class DialogDesignController implements Initializable {
             continuebtn.setDisable(false);
         });
         continuebtn.setOnAction(e -> {
-            Main.address = address.getText();
-            Main.server = hostbtn.isSelected();
-            Main game = new Main();
+            Game.address = address.getText();
+            Game.server = hostbtn.isSelected();
+            Game game = new Game();
             try {
                 game.start(OptionDialog.window);
                 OptionDialog.window.centerOnScreen();
