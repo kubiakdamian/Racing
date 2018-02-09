@@ -20,7 +20,7 @@ public class Level {
             .fill(Color.BLACK)
             .build();
 
-    public static Ellipse ellipse2 = EllipseBuilder.create()
+    public static Ellipse collisionEllipse = EllipseBuilder.create()
             .centerX(400)
             .centerY(300)
             .radiusX(480)

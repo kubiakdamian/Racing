@@ -18,21 +18,29 @@ public class MenuController implements Initializable {
     ToggleButton hostbtn;
     @FXML
     TextField address;
+    @FXML
+    Button rankingbtn;
+
+    private RecordDAO recordDAO;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        recordDAO = new RecordDAO();
         continuebtn.setDisable(true);
+
         playbtn.setOnAction(e -> {
             playbtn.setSelected(true);
             hostbtn.setSelected(false);
             address.setDisable(false);
             continuebtn.setDisable(false);
         });
+
         hostbtn.setOnAction(e -> {
             hostbtn.setSelected(true);
             playbtn.setSelected(false);
             continuebtn.setDisable(false);
         });
+
         continuebtn.setOnAction(e -> {
             Game.address = address.getText();
             Game.server = hostbtn.isSelected();
@@ -42,6 +50,10 @@ public class MenuController implements Initializable {
                 OptionDialog.window.centerOnScreen();
             } catch (Exception ex) {
             }
+        });
+
+        rankingbtn.setOnAction(e -> {
+            recordDAO.getRecords();
         });
     }
 

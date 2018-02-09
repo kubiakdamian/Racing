@@ -5,7 +5,6 @@ import javafx.animation.Timeline;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
-import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
@@ -17,7 +16,6 @@ import javafx.scene.shape.*;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
-import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
@@ -45,9 +43,11 @@ public class Game extends Application {
     private long time = 0;
     private long currentTime = 0;
     private Line meta;
+    private RecordDAO recordDAO;
 
     @Override
     public void start(Stage primaryStage) throws Exception{
+        recordDAO = new RecordDAO();
         container = new Pane();
         timeText = new Label();
         Scene scene = new Scene(container, width, height);
@@ -175,7 +175,7 @@ public class Game extends Application {
 
     private void loadLevel( ObservableList<Node> list) {
         list.add(Level.ellipse);
-        list.add(Level.ellipse2);
+        list.add(Level.collisionEllipse);
 
         meta = new Line(Level.meta[0], Level.meta[1], Level.meta[2], Level.meta[3]);
         meta.setStroke(Color.ORANGE);
@@ -191,12 +191,13 @@ public class Game extends Application {
         if (Collision.DetacteCollision(car.graphics, meta)){
             timeText.setText("");
             time = System.currentTimeMillis() - time;
-            statusUpdater.setTextAndAnimate("Finished in: " + String.format("%.2f", time / 1000.0) + " seconds");
+            statusUpdater.setTextAndAnimate("Finished in: " + String.format("%.3f", time / 1000.0) + " seconds");
             gameLoop.stop();
+            recordDAO.save("Nowy", (double) currentTime / 1000);
         }
 
         if (Collision.DetacteCollision(car.graphics, Level.ellipse)
-                || Collision.DetacteCollision(car.graphics, Level.ellipse2)){
+                || Collision.DetacteCollision(car.graphics, Level.collisionEllipse)){
             if (!car.isColliding) {
                 car.setLocationByVector(Level.startAfterCollision[0] - car.w, height - Level.startAfterCollision[1]);
                 car.setDirection(90);
