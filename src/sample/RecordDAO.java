@@ -20,20 +20,31 @@ public class RecordDAO {
 
     public void save(String name, double time) {
         query = sqlRecordParser.createSaveQuery(name, time);
-        sendQuery(query);
+        sendQuery(query, false);
     }
 
     public void getRecords() {
         query = sqlRecordParser.createGetRecordsQuery();
-        sendQuery(query);
+        sendQuery(query, true);
     }
 
-    private void sendQuery(String query){
+    private void sendQuery(String query, boolean isGettingRecords){
         try {
             Class.forName(DBDRIVER).newInstance();
             connection = DriverManager.getConnection(DBURL, DBUSER, DBPASS);
             statement = connection.createStatement();
-            statement.executeUpdate(query);
+            if(isGettingRecords == true){
+                ResultSet rs = statement.executeQuery(query);
+                while(rs.next()){
+                    double time  = rs.getDouble("czas");
+                    String name = rs.getString("Uzytkownik");
+
+                    System.out.println(name + "  " + time);
+                }
+                rs.close();
+            }else{
+                statement.executeUpdate(query);
+            }
 
             statement.close();
             connection.close();

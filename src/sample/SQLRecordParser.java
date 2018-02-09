@@ -10,7 +10,7 @@ public class SQLRecordParser {
 
     public String createGetRecordsQuery() {
         String query = "";
-        query = "SELECT * FROM rekordy";
+        query = "SELECT * FROM rekordy ORDER BY czas LIMIT 10";
         return query;
     }
 }

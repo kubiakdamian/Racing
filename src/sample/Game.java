@@ -215,6 +215,5 @@ public class Game extends Application {
         car2.setDirection(90);
         car2.getGraphics().setFill(Color.ORANGE);
     }
-
 }
 
