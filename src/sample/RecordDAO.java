@@ -1,6 +1,8 @@
 package sample;
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class RecordDAO {
 
@@ -23,12 +25,16 @@ public class RecordDAO {
         sendQuery(query, false);
     }
 
-    public void getRecords() {
+    public List<String> getRecords() {
+        List<String> records = new ArrayList<>();
         query = sqlRecordParser.createGetRecordsQuery();
-        sendQuery(query, true);
+        records = sendQuery(query, true);
+
+        return records;
     }
 
-    private void sendQuery(String query, boolean isGettingRecords){
+    private List<String> sendQuery(String query, boolean isGettingRecords){
+        List<String> records = new ArrayList<>();
         try {
             Class.forName(DBDRIVER).newInstance();
             connection = DriverManager.getConnection(DBURL, DBUSER, DBPASS);
@@ -38,9 +44,12 @@ public class RecordDAO {
                 while(rs.next()){
                     double time  = rs.getDouble("czas");
                     String name = rs.getString("Uzytkownik");
+                    String record = name + "\t" + time + "s";
+                    records.add(record);
 
                     System.out.println(name + "  " + time);
                 }
+                System.out.println(records);
                 rs.close();
             }else{
                 statement.executeUpdate(query);
@@ -52,5 +61,7 @@ public class RecordDAO {
                 | ClassNotFoundException | SQLException e) {
             e.printStackTrace();
         }
+
+        return records;
     }
 }
