@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Button?>
-<?import javafx.scene.control.TextField?>
 <?import javafx.scene.control.ToggleButton?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Text?>
@@ -13,6 +12,8 @@
       <ToggleButton fx:id="hostbtn" layoutX="210.0" layoutY="215.0" mnemonicParsing="false" prefHeight="39.0" prefWidth="181.0" style="-fx-font-size: 18px;" styleClass="button" text="Create" />
       <Button fx:id="continuebtn" layoutX="208.0" layoutY="318.0" mnemonicParsing="false" prefHeight="39.0" prefWidth="181.0" style="-fx-font-size: 18px;" text="Continue" />
       <Button fx:id="rankingbtn" layoutX="211.0" layoutY="161.0" mnemonicParsing="false" prefHeight="39.0" prefWidth="181.0" style="-fx-font-size: 18px;" text="Ranking" />
-      <TextField fx:id="address" layoutX="212.0" layoutY="262.0" prefHeight="25.0" prefWidth="181.0" />
+      <ToggleButton fx:id="level1Btn" layoutX="210.0" layoutY="267.0" mnemonicParsing="false" prefHeight="39.0" prefWidth="41.0" style="-fx-font-size: 10;" styleClass="button" text="1" />
+      <ToggleButton fx:id="level2Btn" layoutX="278.0" layoutY="267.0" mnemonicParsing="false" prefHeight="39.0" prefWidth="41.0" style="-fx-font-size: 10;" styleClass="button" text="2" />
+      <ToggleButton fx:id="level3Btn" layoutX="348.0" layoutY="267.0" mnemonicParsing="false" prefHeight="39.0" prefWidth="41.0" style="-fx-font-size: 10;" styleClass="button" text="3" />
    </children>
 </AnchorPane>

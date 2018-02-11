@@ -8,7 +8,6 @@ import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleButton;
 import javafx.stage.Stage;
 
@@ -21,7 +20,11 @@ public class MenuController implements Initializable {
     @FXML
     ToggleButton hostbtn;
     @FXML
-    TextField address;
+    private ToggleButton level1Btn;
+    @FXML
+    private ToggleButton level2Btn;
+    @FXML
+    private ToggleButton level3Btn;
     @FXML
     Button rankingbtn;
 
@@ -31,25 +34,60 @@ public class MenuController implements Initializable {
     public void initialize(URL url, ResourceBundle rb) {
         recordDAO = new RecordDAO();
         continuebtn.setDisable(true);
+        level1Btn.setSelected(true);
 
         playbtn.setOnAction(e -> {
             playbtn.setSelected(true);
             hostbtn.setSelected(false);
-            address.setDisable(false);
             continuebtn.setDisable(false);
+            level1Btn.setSelected(false);
+            level2Btn.setSelected(false);
+            level3Btn.setSelected(false);
+            level1Btn.setDisable(true);
+            level2Btn.setDisable(true);
+            level3Btn.setDisable(true);
+
         });
+
+        level1Btn.setOnAction(e -> {
+            level1Btn.setSelected(true);
+            level2Btn.setSelected(false);
+            level3Btn.setSelected(false);
+        });
+
+        level2Btn.setOnAction(e -> {
+            level1Btn.setSelected(false);
+            level2Btn.setSelected(true);
+            level3Btn.setSelected(false);
+        });
+
+        level3Btn.setOnAction(e -> {
+            level1Btn.setSelected(false);
+            level2Btn.setSelected(false);
+            level3Btn.setSelected(true);
+        });
+
 
         hostbtn.setOnAction(e -> {
             hostbtn.setSelected(true);
             playbtn.setSelected(false);
             continuebtn.setDisable(false);
+            level1Btn.setDisable(false);
+            level2Btn.setDisable(false);
+            level3Btn.setDisable(false);
         });
 
         continuebtn.setOnAction(e -> {
-            Game.address = address.getText();
             Game.server = hostbtn.isSelected();
             Game game = new Game();
             try {
+//                if(level1Btn.isSelected()){
+//                    Game.level = 1;
+//                }else if(level2Btn.isSelected()){
+//                    Game.level = 2;
+//                }else if(level3Btn.isSelected()){
+//                    Game.level = 3;
+//                }
                 game.start(OptionDialog.window);
                 OptionDialog.window.centerOnScreen();
             } catch (Exception ex) {

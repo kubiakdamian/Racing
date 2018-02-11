@@ -13,9 +13,6 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.*;
-import javafx.scene.text.Font;
-import javafx.scene.text.FontWeight;
-import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
@@ -43,7 +40,7 @@ public class Game extends Application {
     private long time = 0;
     private static long currentTime = 0;
     private Line meta;
-    private int level = 3;
+    static int level = 1;
 
     public static long getCurrentTime() {
         return currentTime;
@@ -150,16 +147,11 @@ public class Game extends Application {
             r.setFill(Color.WHITE);
             r.setOpacity(0.6);
             container.getChildren().addAll(r);
-            Text t = new Text("Waiting for player 2...");
             ProgressIndicator p = new ProgressIndicator();
 
-            p.setLayoutX(width / 2 + 50);
-            p.setLayoutY(height / 2 - 33);
-            t.setX(width / 2 - 200);
-            t.setY(height / 2);
-            t.setFont(Font.font(Font.getDefault().getName(), FontWeight.BOLD, 17));
-            t.setFill(new Color(107/ 255.0, 162 / 255.0, 252 / 255.0, 1.0));
-            container.getChildren().addAll(t, p);
+            p.setLayoutX(width / 2 - 25);
+            p.setLayoutY(height / 2 - 50);
+            container.getChildren().addAll(p);
         }
 
         new Thread(() -> {
