@@ -43,6 +43,7 @@ public class Game extends Application {
     private long time = 0;
     private static long currentTime = 0;
     private Line meta;
+    private int level = 3;
 
     public static long getCurrentTime() {
         return currentTime;
@@ -59,7 +60,13 @@ public class Game extends Application {
         primaryStage.setResizable(false);
         primaryStage.show();
 
-        loadLevel(container.getChildren());
+        if(level == 1){
+            loadLevel(container.getChildren(), Level.ellipse, Level.collisionEllipse, Level.meta);
+        } else if(level == 2){
+            loadLevel(container.getChildren(), Level2.getRectangle(),  Level2.getCollisionRectangle(), Level2.meta);
+        }else if(level == 3){
+            loadLevel(container.getChildren(), Level3.getPolygon(),  Level.collisionEllipse, Level3.meta);
+        }
 
         car1 = new Car();
         car2 = new Car();
@@ -71,11 +78,22 @@ public class Game extends Application {
                 "-fx-font-size: 30px");
         container.getChildren().add(timeText);
 
-
         if(server){
-            setCars(car1, car2);
+            if(level == 1){
+                setCars(car1, car2, Level.startCar1, Level.startCar2);
+            }else if(level == 2){
+                setCars(car1, car2, Level2.startCar1, Level2.startCar2);
+            }else if(level == 3){
+                setCars(car1, car2, Level3.startCar1, Level3.startCar2);
+            }
         }else{
-            setCars(car2, car1);
+            if(level == 1){
+                setCars(car2, car1, Level.startCar1, Level.startCar2);
+            }else if(level == 2){
+                setCars(car2, car1, Level2.startCar1, Level2.startCar2);
+            }else if(level ==3){
+                setCars(car2, car1, Level3.startCar1, Level3.startCar2);
+            }
         }
 
         container.getChildren().addAll(car1.getGraphics(), car2.getGraphics());
@@ -97,7 +115,13 @@ public class Game extends Application {
             }
 
             car1.translateByRadius(car1.speed);
-            checkForCollisions(car1);
+            if(level == 1){
+                checkForCollisions(car1, Level.ellipse, Level.collisionEllipse, Level.startAfterCollision);
+            }else if(level == 2){
+                checkForCollisions(car1, Level2.getRectangle(), Level2.getCollisionRectangle(), Level2.startAfterCollision);
+            }else if(level == 3){
+                checkForCollisions(car1, Level3.getPolygon(), Level.collisionEllipse, Level3.startAfterCollision);
+            }
 
             try{
                 if(out != null){
@@ -177,11 +201,11 @@ public class Game extends Application {
         launch(args);
     }
 
-    private void loadLevel( ObservableList<Node> list) {
-        list.add(Level.ellipse);
-        list.add(Level.collisionEllipse);
+    private void loadLevel( ObservableList<Node> list, Shape shape, Shape collisionShape, double[] metaPoints) {
+        list.add(shape);
+        list.add(collisionShape);
 
-        meta = new Line(Level.meta[0], Level.meta[1], Level.meta[2], Level.meta[3]);
+        meta = new Line(metaPoints[0], metaPoints[1], metaPoints[2], metaPoints[3]);
         meta.setStroke(Color.ORANGE);
         meta.setStrokeWidth(3);
         meta.setOpacity(0.8);
@@ -191,7 +215,7 @@ public class Game extends Application {
         list.addAll(statusUpdater);
     }
 
-    private void checkForCollisions(Car car) {
+    private void checkForCollisions(Car car, Shape shape, Shape collisionShape, double[] startAfterCollision) {
         if (Collision.DetacteCollision(car.graphics, meta)){
             timeText.setText("");
             time = System.currentTimeMillis() - time;
@@ -200,10 +224,10 @@ public class Game extends Application {
 
         }
 
-        if (Collision.DetacteCollision(car.graphics, Level.ellipse)
-                || Collision.DetacteCollision(car.graphics, Level.collisionEllipse)){
+        if (Collision.DetacteCollision(car.graphics, shape)
+                || Collision.DetacteCollision(car.graphics, collisionShape)){
             if (!car.isColliding) {
-                car.setLocationByVector(Level.startAfterCollision[0] - car.w, height - Level.startAfterCollision[1]);
+                car.setLocationByVector(startAfterCollision[0] - car.w, height - startAfterCollision[1]);
                 car.setDirection(90);
             }
         } else {
@@ -211,11 +235,11 @@ public class Game extends Application {
         }
     }
 
-    private void setCars(Car car1, Car car2){
-        car1.setLocationByVector(Level.startCar1[0] - car1.w, height - Level.startCar1[1]);
+    private void setCars(Car car1, Car car2, double[] startCar1, double[] startCar2){
+        car1.setLocationByVector(startCar1[0] - car1.w, height - startCar1[1]);
         car1.setDirection(90);
         car1.getGraphics().setFill(Color.MEDIUMPURPLE);
-        car2.setLocationByVector(Level.startCar2[0] - car2.w, height - Level.startCar2[1]);
+        car2.setLocationByVector(startCar2[0] - car2.w, height - startCar2[1]);
         car2.setDirection(90);
         car2.getGraphics().setFill(Color.ORANGE);
     }
