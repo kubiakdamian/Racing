@@ -18,9 +18,19 @@ import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.io.File;
+import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 
@@ -44,7 +54,6 @@ public class Game extends Application {
     private static long currentTime = 0;
     private Line meta;
     static int level;
-    private int avd;
 
     public static long getCurrentTime() {
         return currentTime;
@@ -167,7 +176,7 @@ public class Game extends Application {
             try{
                 Socket socket;
                 if(server){
-                    ServerSocket serverSocket = new ServerSocket(5);
+                    ServerSocket serverSocket = new ServerSocket(getPort());
                     socket = serverSocket.accept();
                     Platform.runLater(() -> {
                         container.getChildren().remove(container.getChildren().size() - 3, container.getChildren().size());
@@ -175,7 +184,7 @@ public class Game extends Application {
                         time = System.currentTimeMillis();
                     });
                 }else{
-                    socket = new Socket(address, 5);
+                    socket = new Socket(address, getPort());
                     Platform.runLater(() -> {
                         container.requestFocus();
                         time = System.currentTimeMillis();
@@ -243,5 +252,26 @@ public class Game extends Application {
         car2.setLocationByVector(startCar2[0] - car2.w, height - startCar2[1]);
         car2.setDirection(90);
         car2.getGraphics().setFill(Color.ORANGE);
+    }
+
+    private int getPort() throws ParserConfigurationException, IOException, SAXException {
+        File xmlFile = new File("src/sample/serverInfo.xml");
+        DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+        DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+        Document doc = dBuilder.parse(xmlFile);
+        doc.getDocumentElement().normalize();
+        NodeList nodeList = doc.getElementsByTagName("info");
+        int port = 0;
+        try {
+            for (int temp = 0; temp < nodeList.getLength(); temp++) {
+                org.w3c.dom.Node node = nodeList.item(temp);
+                if (node.getNodeType() == org.w3c.dom.Node.ELEMENT_NODE) {
+                    Element element = (Element) node;
+                    port = Integer.parseInt(element.getElementsByTagName("port").item(0).getTextContent());
+                }
+            }
+        }catch (StringIndexOutOfBoundsException e){}
+
+        return port;
     }
 }
