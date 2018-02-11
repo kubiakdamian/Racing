@@ -40,7 +40,7 @@ public class Game extends Application {
     private long time = 0;
     private static long currentTime = 0;
     private Line meta;
-    static int level = 1;
+    static int level;
 
     public static long getCurrentTime() {
         return currentTime;
