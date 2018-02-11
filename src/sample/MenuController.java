@@ -43,9 +43,9 @@ public class MenuController implements Initializable {
             level1Btn.setSelected(false);
             level2Btn.setSelected(false);
             level3Btn.setSelected(false);
-            level1Btn.setDisable(true);
-            level2Btn.setDisable(true);
-            level3Btn.setDisable(true);
+//            level1Btn.setDisable(true);
+//            level2Btn.setDisable(true);
+//            level3Btn.setDisable(true);
 
         });
 
@@ -81,13 +81,13 @@ public class MenuController implements Initializable {
             Game.server = hostbtn.isSelected();
             Game game = new Game();
             try {
-//                if(level1Btn.isSelected()){
-//                    Game.level = 1;
-//                }else if(level2Btn.isSelected()){
-//                    Game.level = 2;
-//                }else if(level3Btn.isSelected()){
-//                    Game.level = 3;
-//                }
+                if(level1Btn.isSelected()){
+                    Game.level = 1;
+                }else if(level2Btn.isSelected()){
+                    Game.level = 2;
+                }else if(level3Btn.isSelected()){
+                    Game.level = 3;
+                }
                 game.start(OptionDialog.window);
                 OptionDialog.window.centerOnScreen();
             } catch (Exception ex) {
