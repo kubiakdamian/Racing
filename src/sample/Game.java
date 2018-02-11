@@ -41,13 +41,17 @@ public class Game extends Application {
     private StatusUpdater statusUpdater = new StatusUpdater(width / 2 - 150, height / 2 - 35);
     private Timeline gameLoop;
     private long time = 0;
-    private long currentTime = 0;
+    private static long currentTime = 0;
     private Line meta;
-    private RecordDAO recordDAO;
+
+    public static long getCurrentTime() {
+        return currentTime;
+    }
+
+
 
     @Override
     public void start(Stage primaryStage) throws Exception{
-        recordDAO = new RecordDAO();
         container = new Pane();
         timeText = new Label();
         Scene scene = new Scene(container, width, height);
@@ -191,9 +195,9 @@ public class Game extends Application {
         if (Collision.DetacteCollision(car.graphics, meta)){
             timeText.setText("");
             time = System.currentTimeMillis() - time;
-            statusUpdater.setTextAndAnimate("Finished in: " + String.format("%.3f", time / 1000.0) + " seconds");
+            statusUpdater.setStatusText("Finished in: " + String.format("%.3f", time / 1000.0) + " seconds");
             gameLoop.stop();
-            recordDAO.save("Nowy", (double) currentTime / 1000);
+
         }
 
         if (Collision.DetacteCollision(car.graphics, Level.ellipse)

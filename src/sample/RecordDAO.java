@@ -26,7 +26,7 @@ public class RecordDAO {
     }
 
     public List<String> getRecords() {
-        List<String> records = new ArrayList<>();
+        List<String> records;
         query = sqlRecordParser.createGetRecordsQuery();
         records = sendQuery(query, true);
 
@@ -46,22 +46,17 @@ public class RecordDAO {
                     String name = rs.getString("Uzytkownik");
                     String record = name + "\t" + time + "s";
                     records.add(record);
-
-                    System.out.println(name + "  " + time);
                 }
-                System.out.println(records);
                 rs.close();
             }else{
                 statement.executeUpdate(query);
             }
-
             statement.close();
             connection.close();
         } catch (InstantiationException | IllegalAccessException
                 | ClassNotFoundException | SQLException e) {
             e.printStackTrace();
         }
-
         return records;
     }
 }
