@@ -1,7 +1,6 @@
 package sample;
 
 import java.io.DataInputStream;
-import java.io.DataOutputStream;
 import java.net.Socket;
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -11,6 +10,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleButton;
 import javafx.stage.Stage;
 
@@ -30,6 +30,8 @@ public class MenuController implements Initializable {
     private ToggleButton level3Btn;
     @FXML
     Button rankingbtn;
+    @FXML
+    TextField address;
 
     private RecordDAO recordDAO;
     public static Socket clientSocket;
@@ -39,6 +41,9 @@ public class MenuController implements Initializable {
         recordDAO = new RecordDAO();
         continuebtn.setDisable(true);
         level1Btn.setSelected(true);
+        address.setDisable(true);
+        address.setStyle("-fx-background-color: lightblue");
+        address.setPromptText("Enter address");
 
         playbtn.setOnAction(e -> {
             playbtn.setSelected(true);
@@ -50,7 +55,7 @@ public class MenuController implements Initializable {
             level1Btn.setDisable(true);
             level2Btn.setDisable(true);
             level3Btn.setDisable(true);
-
+            address.setDisable(false);
         });
 
         level1Btn.setOnAction(e -> {
@@ -79,6 +84,8 @@ public class MenuController implements Initializable {
             level1Btn.setDisable(false);
             level2Btn.setDisable(false);
             level3Btn.setDisable(false);
+            address.setDisable(true);
+            address.setText("");
         });
 
         continuebtn.setOnAction(e -> {
@@ -92,7 +99,8 @@ public class MenuController implements Initializable {
                 }else if(level3Btn.isSelected()){
                     Game.level = 3;
                 }else if(!hostbtn.isSelected()){
-                    clientSocket = new Socket(Game.address, Game.getPort());
+                    String tempAddress = address.getText();
+                    clientSocket = new Socket(tempAddress, Game.getPort());
                     Game.in = new DataInputStream(clientSocket.getInputStream());
                     int tempLevel = Game.in.readInt();
                     Game.level = tempLevel;

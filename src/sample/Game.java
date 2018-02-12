@@ -22,6 +22,8 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
+
+import javax.swing.*;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -37,7 +39,6 @@ public class Game extends Application {
     private static double FPS = 30.0;
     private Pane container;
     private Label timeText;
-    static String address;
     static boolean server;
     private DataOutputStream out = null;
     static DataInputStream in;
@@ -174,6 +175,7 @@ public class Game extends Application {
                 if(server){
                     ServerSocket serverSocket = new ServerSocket(getPort());
                     socket = serverSocket.accept();
+                    System.out.println(socket.getLocalAddress());
                     out = new DataOutputStream(socket.getOutputStream());
                     out.writeInt(level);
                     out.flush();
@@ -204,6 +206,9 @@ public class Game extends Application {
                 }
             }catch (Exception e){
                 System.out.println("Server error " + e.toString());
+                if (e.toString().equals("java.net.BindException: Address already in use: JVM_Bind")) {
+                    JOptionPane.showMessageDialog(null, "Adres IP jest już w użyciu!", "Error!", JOptionPane.ERROR_MESSAGE);
+                }
             }
         }).start();
 

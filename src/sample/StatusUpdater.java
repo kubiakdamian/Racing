@@ -51,7 +51,7 @@ public class StatusUpdater extends Pane{
         });
 
         textField.textProperty().addListener((ov, oldLength, newLength) -> {
-            if(newLength.length() < 4 || newLength.length() > 15){
+            if(newLength.length() < 4 || newLength.length() > 10){
                 submitBtn.setDisable(true);
             }
             else{
