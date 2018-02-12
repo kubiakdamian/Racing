@@ -22,8 +22,6 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
-
-import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -41,8 +39,8 @@ public class Game extends Application {
     private Label timeText;
     static String address;
     static boolean server;
-    private DataOutputStream out;
-    private DataInputStream in;
+    private DataOutputStream out = null;
+    static DataInputStream in;
     private Car car1;
     private Car car2;
     private double x = 0, y = 0, z = 0;
@@ -58,8 +56,6 @@ public class Game extends Application {
     public static long getCurrentTime() {
         return currentTime;
     }
-
-
 
     @Override
     public void start(Stage primaryStage) throws Exception{
@@ -156,16 +152,16 @@ public class Game extends Application {
         gameLoop.play();
 
         if(server){
-            Rectangle r = new Rectangle(width, height);
+            Rectangle r = new Rectangle(width + 50, height + 50);
             r.setFill(Color.WHITE);
             r.setOpacity(0.6);
             container.getChildren().addAll(r);
-            Text t = new Text("Waiting for player 2...");
+            Text t = new Text("Waiting for player 2");
             ProgressIndicator p = new ProgressIndicator();
 
             p.setLayoutX(width / 2 + 50);
             p.setLayoutY(height / 2 - 33);
-            t.setX(width / 2 - 200);
+            t.setX(width / 2 - 140);
             t.setY(height / 2);
             t.setFont(Font.font(Font.getDefault().getName(), FontWeight.BOLD, 17));
             t.setFill(new Color(107/ 255.0, 162 / 255.0, 252 / 255.0, 1.0));
@@ -178,21 +174,29 @@ public class Game extends Application {
                 if(server){
                     ServerSocket serverSocket = new ServerSocket(getPort());
                     socket = serverSocket.accept();
+                    out = new DataOutputStream(socket.getOutputStream());
+                    out.writeInt(level);
+                    out.flush();
                     Platform.runLater(() -> {
                         container.getChildren().remove(container.getChildren().size() - 3, container.getChildren().size());
                         container.requestFocus();
                         time = System.currentTimeMillis();
                     });
                 }else{
-                    socket = new Socket(address, getPort());
+                    socket = MenuController.clientSocket;
                     Platform.runLater(() -> {
                         container.requestFocus();
                         time = System.currentTimeMillis();
                     });
                 }
-                in = new DataInputStream(socket.getInputStream());
-                out = new DataOutputStream(socket.getOutputStream());
-                in = new DataInputStream(socket.getInputStream());
+                if(server){
+                    in = new DataInputStream(socket.getInputStream());
+                    out = new DataOutputStream(socket.getOutputStream());
+                }else{
+                    in = new DataInputStream(MenuController.clientSocket.getInputStream());
+                    out = new DataOutputStream(MenuController.clientSocket.getOutputStream());
+                }
+
                 while (true){
                     x = in.readDouble();
                     y = in.readDouble();
@@ -221,7 +225,6 @@ public class Game extends Application {
         meta.setOpacity(0.8);
 
         list.add(meta);
-
         list.addAll(statusUpdater);
     }
 
@@ -254,7 +257,7 @@ public class Game extends Application {
         car2.getGraphics().setFill(Color.ORANGE);
     }
 
-    private int getPort() throws ParserConfigurationException, IOException, SAXException {
+    public static int getPort() throws ParserConfigurationException, IOException, SAXException {
         File xmlFile = new File("src/sample/serverInfo.xml");
         DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
         DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();

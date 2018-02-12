@@ -1,5 +1,8 @@
 package sample;
 
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.net.Socket;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.fxml.FXML;
@@ -29,6 +32,7 @@ public class MenuController implements Initializable {
     Button rankingbtn;
 
     private RecordDAO recordDAO;
+    public static Socket clientSocket;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -43,9 +47,9 @@ public class MenuController implements Initializable {
             level1Btn.setSelected(false);
             level2Btn.setSelected(false);
             level3Btn.setSelected(false);
-//            level1Btn.setDisable(true);
-//            level2Btn.setDisable(true);
-//            level3Btn.setDisable(true);
+            level1Btn.setDisable(true);
+            level2Btn.setDisable(true);
+            level3Btn.setDisable(true);
 
         });
 
@@ -87,6 +91,11 @@ public class MenuController implements Initializable {
                     Game.level = 2;
                 }else if(level3Btn.isSelected()){
                     Game.level = 3;
+                }else if(!hostbtn.isSelected()){
+                    clientSocket = new Socket(Game.address, Game.getPort());
+                    Game.in = new DataInputStream(clientSocket.getInputStream());
+                    int tempLevel = Game.in.readInt();
+                    Game.level = tempLevel;
                 }
                 game.start(OptionDialog.window);
                 OptionDialog.window.centerOnScreen();
